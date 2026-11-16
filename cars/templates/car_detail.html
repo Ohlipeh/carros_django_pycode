@@ -1,0 +1,243 @@
+{% extends "base.html" %} {% block content %}
+<style>
+
+  :root {
+    --cor-principal: #0096c7;
+    --cor-principal-escura: #0077b6;
+    --cor-perigo: #d9534f;
+    --cor-perigo-escura: #c9302c;
+    --cor-fundo-card: #ffffff;
+    --cor-fundo-detalhe: #f1f5f9;
+    --cor-texto: #1e293b;
+    --cor-texto-suave: #64748b;
+  }
+
+  .car-card {
+    background-color: var(
+      --cor-fundo-card
+    );
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border-radius: 16px;
+    overflow: hidden;
+    text-align: center;
+    transition: all 0.3s ease;
+    max-width: 520px;
+    margin: 30px auto;
+    color: var(--cor-texto);
+  }
+
+  .car-card:hover {
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+    transform: translateY(-4px);
+  }
+
+  .car-image-wrapper {
+    overflow: hidden;
+  }
+
+  .car-card img {
+    width: 100%;
+    height: 260px;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.5s ease;
+  }
+
+  .car-card:hover img {
+    transform: scale(1.06);
+  }
+
+  .car-info {
+    padding: 24px;
+  }
+
+  .car-card h2 {
+    font-size: 1.7rem;
+    font-weight: 700;
+    margin: 0 0 20px;
+    letter-spacing: -0.5px;
+  }
+
+  .car-details {
+    display: grid;
+    grid-template-columns: repeat(
+      2,
+      1fr
+    );
+    gap: 12px;
+  }
+
+  .detail-item {
+    background-color: var(
+      --cor-fundo-detalhe
+    );
+    border-radius: 10px;
+    padding: 12px;
+  }
+
+  .detail-label {
+    display: block;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--cor-texto-suave);
+    margin-bottom: 4px;
+  }
+
+  .detail-value {
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+
+  .price-box {
+    grid-column: 1 / -1;
+    background: linear-gradient(
+      135deg,
+      var(--cor-principal),
+      var(--cor-principal-escura)
+    );
+    color: #fff;
+  }
+
+  .price-box .detail-label {
+    color: rgba(
+      255,
+      255,
+      255,
+      0.8
+    );
+  }
+
+  .price-box .detail-value {
+    font-size: 1.6rem;
+    font-weight: 700;
+  }
+
+  .buttons-container {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin: 20px 0;
+  }
+
+  .btn {
+    display: inline-block;
+    background-color: var(--cor-principal);
+    color: #fff;
+    border: none;
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .btn:hover {
+    background-color: var(
+      --cor-principal-escura
+    );
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 150, 199, 0.4); /
+  }
+
+  .btn-danger {
+    background-color: var(--cor-perigo);
+  }
+
+  .btn-danger:hover {
+    background-color: var(
+      --cor-perigo-escura
+    );
+    box-shadow: 0 4px 12px rgba(217, 83, 79, 0.4);
+  }
+
+  .erro-message {
+    color: var(
+      --cor-perigo
+    );
+    font-size: 14px;
+    margin-top: 5px;
+  }
+
+  a {
+    text-decoration: none !important;
+  }
+
+  .price-box {
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .price-box:hover {
+    transform: scale(
+      1.03
+    );
+  }
+
+  .price-box.comprado {
+    background: linear-gradient(
+      135deg,
+      #2d9d5b,
+      #1e7a44
+    );
+  }
+
+  @media (max-width: 480px) {
+    .car-details {
+      grid-template-columns: 1fr;
+    }
+
+    .car-card img {
+      height: 200px;
+    }
+  }
+</style>
+
+<div class="car-card">
+  <div class="car-image-wrapper">
+    <img
+      src="{{ object.photo.url }}"
+      alt="{{ object.model }} - {{ object.brand }}"
+    />
+  </div>
+
+  <div class="car-info">
+    <h2>{{ object.brand }} {{ object.model }}</h2>
+
+    <div class="car-details">
+      <div class="detail-item">
+        <span class="detail-label">Year fabrication</span>
+        <span class="detail-value">{{ object.factory_year }}</span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">Year model</span>
+        <span class="detail-value">{{ object.model_year }}</span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">Plate</span>
+        <span class="detail-value">{{ object.plate }}</span>
+      </div>
+      <div class="detail-item price-box" id="botao-comprar" role="button">
+        <span class="detail-label">Price</span>
+        <span class="detail-value">R$ {{ object.value|floatformat:"2g" }}</span>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  const caixaPreco = document.getElementById("botao-comprar");
+  const rotulo = caixaPreco.querySelector(".detail-label");
+  caixaPreco.addEventListener("click", function () {
+    caixaPreco.classList.toggle("comprado");
+    if (caixaPreco.classList.contains("comprado")) {
+      rotulo.textContent = "✔ Bought for";
+    } else {
+      rotulo.textContent = "Price";
+    }
+  });
+</script>
+<div class="buttons-container">
+  <a href="{% url 'car_update' pk=object.pk %}" class="btn btn-primary">Edit</a>
+</div>
+{% endblock %}

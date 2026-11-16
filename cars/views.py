@@ -1,5 +1,5 @@
-# I import two views generic ready: ListView (shows a list the obj) and CreateView (show the process a form the create)
-from django.views.generic import CreateView, ListView
+# I import three views generic ready: ListView (shows a list the obj), CreateView (show the process a form the create), DetailView (generic view what show the details a object), UpdateView the view generic what show process a form.
+from django.views.generic import CreateView, DetailView, ListView, UpdateView
 
 # I import cars models in Car, The view need use model.
 from cars.models import Car
@@ -40,4 +40,24 @@ class NewCarCreateView(CreateView):
     # I specify which HTML template will be form
     template_name = "new_car.html"
     # I specify for from the person will be after save with sucess
+    success_url = "/cars/"
+
+
+# I create a class CarDetailView: Inherit the DetaiView do the django search a car in bank and send for template
+class CarDetailView(DetailView):
+    # I specify which model will search
+    model = Car
+    # I call which template HTML show the details car.
+    template_name = "car_detail.html"
+
+
+# I create class CarUpdateView: Inherit the UpdateView do the django search car, to fill in form with he date and save the alt.
+class CarUpdateView(UpdateView):
+    # I call which model to go is edit.
+    model = Car
+    # I call which form use
+    form_class = CarModelForm
+    # I call which tempalte HTML show.
+    template_name = "car_update.html"
+    # I call for where person to go after the save with sucess.
     success_url = "/cars/"
