@@ -29,10 +29,12 @@ class Car(models.Model):
     value = models.FloatField(blank=True, null=True)
     # ImageField = Image in file, upload_to = upload in file "cars"
     photo = models.ImageField(upload_to="cars/", blank=True, null=True)
+    bio = models.TextField(blank=True, null=True)
 
     def __str__(self):
         # Remove "Car object 2" and customize with the name of the object.
         return self.model
+
 
 # I create model CarInventory, which turns a tabel in bank tu store the "photos" the stock at moment.
 class CarInventory(models.Model):
@@ -45,8 +47,8 @@ class CarInventory(models.Model):
 
     # I create class Meta, which store config. model
     class Meta:
-        # I order the register too much new  for too much old. the "-" in front name invert the order.  
-        ordering = ['-created_at']
+        # I order the register too much new  for too much old. the "-" in front name invert the order.
+        ordering = ["-created_at"]
 
     # I define with register appears write (in panel admin, examplo.)
     def __str__(self):

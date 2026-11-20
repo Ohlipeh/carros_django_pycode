@@ -222,6 +222,12 @@
         <span class="detail-label">Price</span>
         <span class="detail-value">R$ {{ object.value|floatformat:"2g" }}</span>
       </div>
+      {% if object.bio %}
+      <div class="detail-item-box" style="grid-column: 1 / -1">
+        <span class="detail-label">Bio</span>
+        <span class="detail-value">{{ object.bio}}</span>
+      </div>
+      {% endif %}
     </div>
   </div>
 </div>
