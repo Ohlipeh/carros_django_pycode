@@ -33,3 +33,22 @@ class Car(models.Model):
     def __str__(self):
         # Remove "Car object 2" and customize with the name of the object.
         return self.model
+
+# I create model CarInventory, which turns a tabel in bank tu store the "photos" the stock at moment.
+class CarInventory(models.Model):
+    # I create in camps the number int for qnt cars
+    cars_count = models.IntegerField()
+    # I create in camp the number decimal for value tot the cars.
+    cars_value = models.FloatField()
+    # I create in camp the date and hour: the auto_now_add=True fills in automatically with the moment in which register is create.
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    # I create class Meta, which store config. model
+    class Meta:
+        # I order the register too much new  for too much old. the "-" in front name invert the order.  
+        ordering = ['-created_at']
+
+    # I define with register appears write (in panel admin, examplo.)
+    def __str__(self):
+        # I show qnt and the value, used f-string to include the variables come in text.
+        return f"{self.cars_count} - {self.cars_value}"

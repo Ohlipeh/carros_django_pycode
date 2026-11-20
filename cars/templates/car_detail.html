@@ -225,6 +225,7 @@
     </div>
   </div>
 </div>
+{% if user.is_authenticated %}
 <script>
   const caixaPreco = document.getElementById("botao-comprar");
   const rotulo = caixaPreco.querySelector(".detail-label");
@@ -237,7 +238,11 @@
     }
   });
 </script>
+{% endif %} {% if user.is_authenticated %}
 <div class="buttons-container">
   <a href="{% url 'car_update' pk=object.pk %}" class="btn btn-primary">Edit</a>
+  <a href="{% url 'car_delete' pk=object.pk %}" class="btn btn-danger"
+    >Delete</a
+  >
 </div>
-{% endblock %}
+{% endif %} {% endblock %}

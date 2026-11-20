@@ -14,7 +14,13 @@ from django.conf.urls.static import static
 from accounts.views import login_view, logout_view, register_view
 
 # I import two new views, in its place the old.
-from cars.views import CarDetailView, CarListView, NewCarCreateView, CarUpdateView
+from cars.views import (
+    CarDeleteView,
+    CarDetailView,
+    CarListView,
+    NewCarCreateView,
+    CarUpdateView,
+)
 
 # I create list urlpatterns, Django search which scription ledads where
 urlpatterns = [
@@ -28,6 +34,8 @@ urlpatterns = [
     path("car/<int:pk>/", CarDetailView.as_view(), name="car_detail"),
     # I link the address "car/<number>/" the CarUpdateView: The <int:pk> capture number of URL (the id car) and send for view with name pk.
     path("car/<int:pk>/update/", CarUpdateView.as_view(), name="car_update"),
+    # I link the address "car/<number>/delete/" the CarDeleteView the <int:pk> capture the id car what to go is delete.
+    path("car/<int:pk>/delete/", CarDeleteView.as_view(), name="car_delete"),
     # I link the address "register/" the view register_view: the name="register" is of nick the use for call this route in templates.
     path("register/", register_view, name="register"),
     # I link the address "login/" the view login_view: the name="login" is nick what the redirect("login") use

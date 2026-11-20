@@ -1,5 +1,14 @@
 # I import three views generic ready: ListView (shows a list the obj), CreateView (show the process a form the create), DetailView (generic view what show the details a object), UpdateView the view generic what show process a form.
-from django.views.generic import CreateView, DetailView, ListView, UpdateView
+from django.urls import reverse_lazy
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
+from django.views.generic import (
+    CreateView,
+    DeleteView,
+    DetailView,
+    ListView,
+    UpdateView,
+)
 
 # I import cars models in Car, The view need use model.
 from cars.models import Car
@@ -31,6 +40,17 @@ class CarListView(ListView):
         return cars
 
 
+# I create a class CarDetailView: Inherit the DetaiView do the django search a car in bank and send for template
+class CarDetailView(DetailView):
+    # I specify which model will search
+    model = Car
+    # I say which template HTML show the details car.
+    template_name = "car_detail.html"
+
+
+# I aplicate protection in class int: the name="dispatch" to do decorate to apply for any type for order (GET, POST...)
+# The login_url="login" it says, if the person not is logged in, she is routed to the path nicknamed "login"
+@method_decorator(login_required(login_url="login"), name="dispatch")
 # I create the class NewCreateView: Inherit the CreateView aready the django to take car alone
 class NewCarCreateView(CreateView):
     # I specify which model is to go create.
@@ -43,21 +63,30 @@ class NewCarCreateView(CreateView):
     success_url = "/cars/"
 
 
-# I create a class CarDetailView: Inherit the DetaiView do the django search a car in bank and send for template
-class CarDetailView(DetailView):
-    # I specify which model will search
-    model = Car
-    # I call which template HTML show the details car.
-    template_name = "car_detail.html"
-
-
+@method_decorator(login_required(login_url="login"), name="dispatch")
 # I create class CarUpdateView: Inherit the UpdateView do the django search car, to fill in form with he date and save the alt.
 class CarUpdateView(UpdateView):
-    # I call which model to go is edit.
+    # I say which model to go is edit.
     model = Car
-    # I call which form use
+    # I say which form use
     form_class = CarModelForm
-    # I call which tempalte HTML show.
+    # I say which tempalte HTML show.
     template_name = "car_update.html"
-    # I call for where person to go after the save with sucess.
+    # I say for where person to go after the save with sucess.
+    success_url = "/cars/"
+
+    # I create the get_success_url, what django calls late the to know save for where take the person.
+    def get_success_url(self):
+        # I to take person for the page details car what finished edit. self.object is car adited and the pk he is the id what route need.
+        return reverse_lazy("car_detail", kwargs={"pk": self.object.pk})
+
+
+@method_decorator(login_required(login_url="login"), name="dispatch")
+# I create the class CarDeleteView: Inherit DeleteView do the djando search car, show page the comfirm and delete which person confirm.
+class CarDeleteView(DeleteView):
+    # I say what model to go is delete
+    model = Car
+    # I say which template HTML show
+    template_name = "car_delete.html"
+    # I say for where the person to go after the delete.
     success_url = "/cars/"

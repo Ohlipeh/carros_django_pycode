@@ -123,6 +123,9 @@
     <div class="buttons-container">
       <button type="submit" class="btn">Save</button>
       <a href="{% url 'cars_list' %}" class="btn btn-secondary">Cancel</a>
+      <a href="{% url 'car_delete' pk=object.pk %}" class="btn btn-danger"
+        >Delete</a
+      >
     </div>
   </form>
 </div>
