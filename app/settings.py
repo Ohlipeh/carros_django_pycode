@@ -13,9 +13,13 @@ https://docs.djangoproject.com/en/6.1/ref/settings/
 from pathlib import Path
 import os
 
+# I import the load_dotenv for loading file .env
+from dotenv import load_dotenv
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+# I load the variables are which in file .env
+load_dotenv()
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.1/howto/deployment/checklist/
@@ -78,8 +82,18 @@ WSGI_APPLICATION = "app.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        # I call which the bank is the PostgreSQL
+        "ENGINE": "django.db.backends.postgresql",
+        # I defin the name in bank
+        "NAME": "carros",
+        # I defin the user in bank
+        "USER": "postgres",
+        # I read the password .env, useing the name which write.
+        "PASSWORD": os.getenv("SENHA_BD"),
+        # I defin where is in bank route
+        "HOST": "localhost",
+        # I defin the port PostgreSQL
+        "PORT": "5432",
     }
 }
 
