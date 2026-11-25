@@ -1,2 +1,7 @@
 # Variáveis de ambiente e segredos
 .env
+
+db.sqlite3
+
+venv
+media
