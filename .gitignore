@@ -5,3 +5,9 @@ db.sqlite3
 
 venv
 media
+__pycache__/
+*.pyc
+.env
+venv/
+staticfiles/
+app.sock
