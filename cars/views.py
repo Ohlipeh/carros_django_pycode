@@ -11,7 +11,7 @@ from django.views.generic import (
 )
 
 # I import cars models in Car, The view need use model.
-from cars.models import Car
+from cars.models import Car, Brand
 
 # I import the form CarModelForm, what created from model Car
 from cars.forms import CarModelForm
@@ -24,20 +24,37 @@ class CarListView(ListView):
     # I specify which HTML template will be used to display the list
     template_name = "cars.html"
     # I specify the name of the variable that the HTML will receive (the {% for car in cars %} uses this name)
-    context_object_name = "cars"
+    paginate_by = 6
 
     # I overrode get_queryset, which is the method that decides WHICH cars are included in the list
     def get_queryset(self):
         # I call the original get_queryset (which returns all cars) using super() and sort by model (A to Z)
-        cars = super().get_queryset().order_by("model")
-        # I retrieve the search text from the URL; within the class, the request is stored in self.request
+        cars = super().get_queryset()
+        # I retrieve the search, brand and order text from the URL; within the class, the request is stored in self.request
         search = self.request.GET.get("search")
+        brand = self.request.GET.get("brand")
+        order = self.request.GET.get("order")
         # I verific if exists some text the search
         if search:
             # I filter the list is which already order, ignored MAX and MIN
-            cars = cars.filter(model_icontains=search)
+            cars = cars.filter(model__icontains=search)
+        if brand:
+            cars = cars.filter(brand_id=brand)
+
+        allowed_orders = {
+            "model": "model",
+            "value_asc": "value",
+            "value_desc": "-value",
+            "year_desc": "-factory_year",
+        }
+        cars = cars.order_by(allowed_orders.get(order, "model"))
         # I return the list end the cras
         return cars
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["brands"] = Brand.objects.all().order_by("name")
+        return context
 
 
 # I create a class CarDetailView: Inherit the DetaiView do the django search a car in bank and send for template

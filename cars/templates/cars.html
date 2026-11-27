@@ -52,27 +52,31 @@
     }
   }
 
-  form {
+  form.filter-form {
     display: flex;
+    flex-wrap: wrap;
     justify-content: center;
     align-items: center;
+    gap: 10px;
     margin-bottom: 20px;
     text-align: center;
     padding: 20px;
   }
 
-  input[type="text"] {
+  input[type="text"],
+  select {
     padding: 10px;
     font-size: 16px;
     border: 2px solid #e3e1e1;
     border-radius: 4px;
-    margin-right: 10px;
-    transition: border-bottom-color 0.3s ease-in-out;
+    background-color: #fff;
+    transition: border-color 0.3s ease-in-out;
   }
 
-  input[type="text"]:focus {
+  input[type="text"]:focus,
+  select:focus {
     outline: none;
-    border-bottom-color: #e3e1e1;
+    border-color: #0096c7;
   }
 
   button[type="submit"] {
@@ -90,6 +94,19 @@
     background-color: #108eb8;
   }
 
+  .clear-btn {
+    padding: 10px 16px;
+    font-size: 16px;
+    border-radius: 4px;
+    background-color: #e3e1e1;
+    color: #333;
+  }
+
+  .clear-btn:hover {
+    background-color: #d0cece;
+    color: #000;
+  }
+
   a {
     font-size: 18px;
     color: #333;
@@ -99,11 +116,62 @@
   a:hover {
     color: #0096c7;
   }
+
+  .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    margin: 20px 0 40px;
+  }
+
+  .pagination a {
+    padding: 8px 14px;
+    background-color: #0096c7;
+    color: #fff;
+    border-radius: 4px;
+    font-size: 15px;
+  }
+
+  .pagination a:hover {
+    background-color: #108eb8;
+    color: #fff;
+  }
+
+  .pagination span {
+    font-size: 15px;
+    color: #555;
+  }
 </style>
 
-<form method="GET" action="{% url 'cars_list' %}">
-  <input type="text" name="search" placeholder="Buscar carro..." />
-  <button type="submit">Buscar</button>
+<form method="GET" action="{% url 'cars_list' %}" class="filter-form">
+  <input
+    type="text"
+    name="search"
+    placeholder="Buscar modelo..."
+    value="{{ request.GET.search|default:'' }}"
+  />
+
+  <select name="brand">
+    <option value="">Todas as marcas</option>
+    {% for brand in brands %}
+    <option value="{{ brand.pk }}" {% if request.GET.brand == brand.pk|stringformat:"s" %}selected{% endif %}>
+      {{ brand.name }}
+    </option>
+    {% endfor %}
+  </select>
+
+  <select name="order">
+    <option value="model" {% if request.GET.order == "model" %}selected{% endif %}>Modelo (A-Z)</option>
+    <option value="value_asc" {% if request.GET.order == "value_asc" %}selected{% endif %}>Menor preço</option>
+    <option value="value_desc" {% if request.GET.order == "value_desc" %}selected{% endif %}>Maior preço</option>
+    <option value="year_desc" {% if request.GET.order == "year_desc" %}selected{% endif %}>Mais novos</option>
+  </select>
+
+  <button type="submit">Filtrar</button>
+  {% if request.GET.search or request.GET.brand or request.GET.order %}
+  <a href="{% url 'cars_list' %}" class="clear-btn">Limpar</a>
+  {% endif %}
 </form>
 
 <div class="car-grid">
@@ -115,9 +183,22 @@
       <p>{{ car.factory_year }} - R$ {{ car.value|floatformat:"2g" }}</p>
     </div>
   </a>
-
   {% endfor %} {% else %}
   <p class="no-results">Nenhum carro encontrado.</p>
   {% endif %}
 </div>
+
+{% if is_paginated %}
+<div class="pagination">
+  {% if page_obj.has_previous %}
+  <a href="?page={{ page_obj.previous_page_number }}&search={{ request.GET.search|default:'' }}&brand={{ request.GET.brand|default:'' }}&order={{ request.GET.order|default:'' }}">Anterior</a>
+  {% endif %}
+
+  <span>Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
+
+  {% if page_obj.has_next %}
+  <a href="?page={{ page_obj.next_page_number }}&search={{ request.GET.search|default:'' }}&brand={{ request.GET.brand|default:'' }}&order={{ request.GET.order|default:'' }}">Próxima</a>
+  {% endif %}
+</div>
+{% endif %}
 {% endblock %}

@@ -24,6 +24,7 @@ from cars.views import (
 
 # I create list urlpatterns, Django search which scription ledads where
 urlpatterns = [
+    path("", CarListView.as_view(), name="home"),
     # I speak scription "admin/" open panel admin for django.
     path("admin/", admin.site.urls),
     # I link the address "cars/" class CarListView: The as_view() transform class in a function w/ django can call.
