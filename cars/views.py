@@ -23,6 +23,7 @@ class CarListView(ListView):
     model = Car
     # I specify which HTML template will be used to display the list
     template_name = "cars.html"
+    context_object_name = "cars"
     # I specify the name of the variable that the HTML will receive (the {% for car in cars %} uses this name)
     paginate_by = 6
 
